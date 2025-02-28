@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import ErrorMessage from "../components/ErrorMessage"
 import api from "../config/axios"
 import { toast } from "sonner"
@@ -11,6 +11,7 @@ export const SignInView = () => {
     email: '',
     password: ''
   }
+  const navigate = useNavigate();
 
   const { register, handleSubmit, formState:{errors} } = useForm({ defaultValues: initialValues })
   const handleSignIn = async (formData: SignInForm) => {
@@ -18,6 +19,7 @@ export const SignInView = () => {
       const {data} = await api.post(`/auth/sign-in`,formData)
       toast.success('Welcome back!');
       localStorage.setItem('devTree_access_token', data.access_token);
+      navigate("/admin");
     }
     catch(error){
       if(isAxiosError(error) && error.response){

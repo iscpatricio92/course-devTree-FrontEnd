@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useForm } from 'react-hook-form'
 import ErrorMessage from "../components/ErrorMessage";
 import { SignUpForm } from "../types";
@@ -14,6 +14,7 @@ const SignUpView = () => {
     password: '',
     password_confirmation: ''
   }
+  const navigate=useNavigate();
   const { register, watch, handleSubmit, reset, formState:{errors} } = useForm<SignUpForm>({ defaultValues: initialValues });
   
   
@@ -22,6 +23,7 @@ const SignUpView = () => {
     try{
       const {data} = await api.post(`/auth/sign-up`,formData)
       toast.success(data.message);
+      navigate('/auth/sign-in');
       reset()
     }
     catch(error){
