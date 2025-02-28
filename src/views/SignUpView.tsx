@@ -18,13 +18,9 @@ const SignUpView = () => {
   
   
   const password = watch('password');
-  console.log(import.meta.env);
-  
-  
   const handleRegister = async(formData: SignUpForm) => {
     try{
       const {data} = await api.post(`/auth/sign-up`,formData)
-      console.log(data);
       toast.success(data.message);
       reset()
     }

@@ -16,7 +16,6 @@ export const SignInView = () => {
   const handleSignIn = async (formData: SignInForm) => {
     try{
       const {data} = await api.post(`/auth/sign-in`,formData)
-      console.log(data);
       toast.success(data.message);
     }
     catch(error){
