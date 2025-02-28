@@ -2,7 +2,9 @@ import { Link } from "react-router-dom"
 import { useForm } from 'react-hook-form'
 import ErrorMessage from "../components/ErrorMessage";
 import { SignUpForm } from "../types";
-import axios from "axios";
+import axios, {isAxiosError} from "axios";
+import { toast } from "sonner";
+import api from "../config/axios";
 
 const SignUpView = () => {
   const initialValues ={
@@ -12,18 +14,25 @@ const SignUpView = () => {
     password: '',
     password_confirmation: ''
   }
-  const { register, watch, handleSubmit, formState:{errors} } = useForm<SignUpForm>({ defaultValues: initialValues });
+  const { register, watch, handleSubmit, reset, formState:{errors} } = useForm<SignUpForm>({ defaultValues: initialValues });
   
   
   const password = watch('password');
+  console.log(import.meta.env);
+  
   
   const handleRegister = async(formData: SignUpForm) => {
     try{
-      const response = await axios.post('http://localhost:4000/auth/sign-up',formData)
-      console.log(response);
+      const {data} = await api.post(`/auth/sign-up`,formData)
+      console.log(data);
+      toast.success(data.message);
+      reset()
     }
     catch(error){
-      console.error(error);
+      if(isAxiosError(error) && error.response){
+        toast.error(error.response.data.message);
+        console.log(error.response.data.error);
+      }
     }
   }
 
