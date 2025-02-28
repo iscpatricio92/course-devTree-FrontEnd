@@ -30,7 +30,7 @@ const SignUpView = () => {
     }
     catch(error){
       if(isAxiosError(error) && error.response){
-        toast.error(error.response.data.message);
+        toast.error(error.response.data.error);
         console.log(error.response.data.error);
       }
     }
