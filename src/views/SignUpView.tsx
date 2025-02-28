@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 import { useForm } from 'react-hook-form'
 import ErrorMessage from "../components/ErrorMessage";
 import { SignUpForm } from "../types";
+import axios from "axios";
 
 const SignUpView = () => {
   const initialValues ={
@@ -16,9 +17,14 @@ const SignUpView = () => {
   
   const password = watch('password');
   
-  const handleRegister = (data: SignUpForm) => {
-    console.log(data);
-    
+  const handleRegister = async(formData: SignUpForm) => {
+    try{
+      const response = await axios.post('http://localhost:4000/auth/sign-up',formData)
+      console.log(response);
+    }
+    catch(error){
+      console.error(error);
+    }
   }
 
 
