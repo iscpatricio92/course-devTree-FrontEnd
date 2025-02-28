@@ -16,7 +16,8 @@ export const SignInView = () => {
   const handleSignIn = async (formData: SignInForm) => {
     try{
       const {data} = await api.post(`/auth/sign-in`,formData)
-      toast.success(data.message);
+      toast.success('Welcome back!');
+      localStorage.setItem('devTree_access_token', data.access_token);
     }
     catch(error){
       if(isAxiosError(error) && error.response){
