@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form"
 import ErrorMessage from "../components/ErrorMessage";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProfileForm, User } from "../types";
-import { updateUser } from "../api/DevTreeApi";
+import { updateUser, updateImage } from "../api/DevTreeApi";
 import { toast } from "sonner";
 
 
@@ -12,7 +12,8 @@ export default function ProfileView() {
 
     const { register, handleSubmit, formState:{errors}} = useForm<ProfileForm>({defaultValues:{
         handle: data.handle,
-        description: data.description
+        description: data.description,
+        image: data.image
     }});
 
     const updateProfileMutation= useMutation({
@@ -26,8 +27,27 @@ export default function ProfileView() {
         }
     });
 
+    const uploadImageMutation= useMutation({
+        mutationFn: updateImage,
+        onError: (error: Error) => {
+            toast.error(error.message);
+        },
+        onSuccess: (res) => {
+            toast.success('Image uploaded');
+            queryClient.setQueryData(['profile'], (prevData:User)=>{
+                return {...prevData, image: res?.image}
+        });
+        }
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>)=>{
+        if(e.target.files){
+            uploadImageMutation.mutate(e.target.files[0]);
+        }
+    }
+
     const handleUserProfileForm=(data:ProfileForm)=>{
-        updateProfileMutation.mutateAsync(data);
+        updateProfileMutation.mutate(data);
     }
     return (
         <form 
@@ -70,7 +90,8 @@ export default function ProfileView() {
                     name="handle"
                     className="border-none bg-slate-100 rounded-lg p-2"
                     accept="image/*"
-                    onChange={ () => {} }
+                    onChange={ handleChange}
+                    
                 />
                 {errors.image && <ErrorMessage>{errors.image.message}</ErrorMessage>}
             </div>
