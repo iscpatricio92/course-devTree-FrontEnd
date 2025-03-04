@@ -25,7 +25,9 @@ const HandleData = ({data}:HandleDataProps) => {
                     rel="noreferrer noopener"
                     key={link.name}
                     >
-                        Visit my: {link.name} </a>
+                        <img src={`/social/icon_${link.name}.svg`} alt='image social' className="w-12"/>
+                        <p className="text-black capitalize font-bold text-lg">Visit my: {link.name}</p>
+                    </a>
                 ))
                 : <p className="text-center">There is not links in this profile</p>
             }
