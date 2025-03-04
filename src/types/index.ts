@@ -7,7 +7,7 @@ export type User = {
     image: string,
     links: string
 }
-
+export type UserHandle=Pick<User, 'handle' | 'description' | 'image' | 'links' | 'name'>
 export type SignUpForm = Pick<User, 'email' | 'name' | 'handle'> & {
     password: string,
     password_confirmation: string
