@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useForm } from 'react-hook-form'
 import ErrorMessage from "../components/ErrorMessage";
 import { SignUpForm } from "../types";
@@ -7,10 +7,11 @@ import { toast } from "sonner";
 import api from "../config/axios";
 
 const SignUpView = () => {
+  const location= useLocation();
   const initialValues ={
     name: '',
     email: '',
-    handle: '',
+    handle: location.state?.handle ?? '',
     password: '',
     password_confirmation: ''
   }
