@@ -16,7 +16,7 @@ export const getUser = async () => {
 
 export const updateProfile= async (formData: User) => {
     try {
-        const { data } = await api.patch<string>('/profile', formData)
+        const { data } = await api.patch<{message:string}>('/profile', formData)
         return data;
     }
     catch (error) {

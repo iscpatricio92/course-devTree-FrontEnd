@@ -20,7 +20,7 @@ const ProfileView=()=> {
             toast.error(error.message)
         }, 
         onSuccess: (data) => {
-            toast.success(data)
+            toast.success(data?.message)
             queryClient.invalidateQueries({queryKey: ['profile']})
         }
     })
