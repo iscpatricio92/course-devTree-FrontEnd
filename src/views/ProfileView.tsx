@@ -7,7 +7,7 @@ import { updateProfile, uploadImage } from '../api/DevTreeApi'
 
 const ProfileView=()=> {
     const queryClient = useQueryClient()
-    const data : User = queryClient.getQueryData(['user'])!
+    const data : User = queryClient.getQueryData(['profile'])!
 
     const { register, handleSubmit, formState: { errors } } = useForm<ProfileForm>({ defaultValues: {
         handle: data.handle,
@@ -21,7 +21,7 @@ const ProfileView=()=> {
         }, 
         onSuccess: (data) => {
             toast.success(data)
-            queryClient.invalidateQueries({queryKey: ['user']})
+            queryClient.invalidateQueries({queryKey: ['profile']})
         }
     })
 
@@ -31,7 +31,7 @@ const ProfileView=()=> {
             toast.error(error.message)
         }, 
         onSuccess: (data) => {
-            queryClient.setQueryData(['user'], (prevData: User) => {
+            queryClient.setQueryData(['profile'], (prevData: User) => {
                 return {
                     ...prevData,
                     image: data
@@ -47,7 +47,7 @@ const ProfileView=()=> {
     }
 
     const handleUserProfileForm = (formData: ProfileForm) => {
-        const user : User = queryClient.getQueryData(['user'])!
+        const user : User = queryClient.getQueryData(['profile'])!
         user.description = formData.description
         user.handle = formData.handle
         updateProfileMutation.mutate(user)
