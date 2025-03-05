@@ -4,7 +4,7 @@ import DevTreeInput from "../components/DevTreeInput"
 import { isValidUrl } from "../utils"
 import { toast } from "sonner"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { updateUser } from "../api/DevTreeApi"
+import { updateProfile } from "../api/DevTreeApi"
 import { SocialNetwork, User } from "../types"
 
 const LinkTreeView = () => {
@@ -13,7 +13,7 @@ const LinkTreeView = () => {
   const queryClient = useQueryClient()
   const user:User= queryClient.getQueryData(['profile'])!
   const { mutate } = useMutation({
-    mutationFn: updateUser,
+    mutationFn: updateProfile,
     onError: (error) => {
       toast.error(error.message)
     },

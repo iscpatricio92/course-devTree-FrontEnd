@@ -14,19 +14,19 @@ export const getUser = async () => {
     }
 }
 
-export const updateUser = async (formData: User) => {
-    try{
-      const {data} = await api.patch<User>(`/profile`, formData)
-      return data;
+export const updateProfile= async (formData: User) => {
+    try {
+        const { data } = await api.patch<string>('/profile', formData)
+        return data;
     }
-    catch(error){
-      if(isAxiosError(error) && error.response){
-        throw new Error(error.response.data.error);
-      }
+    catch (error) {
+        if (isAxiosError (error) && error.response) {
+            throw new Error(error.response.data.error)
+        }
     }
 }
 
-export const updateImage = async (file: File) => {
+export const uploadImage = async (file: File) => {
   let formData = new FormData();
   formData.append('file', file);
     try{

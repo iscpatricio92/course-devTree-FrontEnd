@@ -1,59 +1,60 @@
-import { useForm } from "react-hook-form"
-import ErrorMessage from "../components/ErrorMessage";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ProfileForm, User } from "../types";
-import { updateUser, updateImage } from "../api/DevTreeApi";
-import { toast } from "sonner";
+import { useForm } from 'react-hook-form'
+import { useQueryClient, useMutation } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import ErrorMessage from '../components/ErrorMessage'
+import { ProfileForm, User } from '../types'
+import { updateProfile, uploadImage } from '../api/DevTreeApi'
 
+const ProfileView=()=> {
+    const queryClient = useQueryClient()
+    const data : User = queryClient.getQueryData(['user'])!
 
-export default function ProfileView() {
-    const queryClient= useQueryClient();
-    const data: User = queryClient.getQueryData(['profile'])!;
-
-    const { register, handleSubmit, formState:{errors}} = useForm<ProfileForm>({defaultValues:{
+    const { register, handleSubmit, formState: { errors } } = useForm<ProfileForm>({ defaultValues: {
         handle: data.handle,
-        description: data.description,
-        image: data.image
-    }});
+        description: data.description
+    } })
 
-    const updateProfileMutation= useMutation({
-        mutationFn: updateUser,
-        onError: (error: Error) => {
-            toast.error(error.message);
-        },
-        onSuccess: (res) => {
-            toast.success(res?.message);
-            queryClient.invalidateQueries({queryKey:['profile']});
+    const updateProfileMutation = useMutation({
+        mutationFn: updateProfile,
+        onError: (error) => {
+            toast.error(error.message)
+        }, 
+        onSuccess: (data) => {
+            toast.success(data)
+            queryClient.invalidateQueries({queryKey: ['user']})
         }
-    });
+    })
 
-    const uploadImageMutation= useMutation({
-        mutationFn: updateImage,
-        onError: (error: Error) => {
-            toast.error(error.message);
-        },
-        onSuccess: (res) => {
-            toast.success('Image uploaded');
-            queryClient.setQueryData(['profile'], (prevData:User)=>{
-                return {...prevData, image: res?.image}
-        });
+    const uploadImageMutation = useMutation({
+        mutationFn: uploadImage,
+        onError: (error) => {
+            toast.error(error.message)
+        }, 
+        onSuccess: (data) => {
+            queryClient.setQueryData(['user'], (prevData: User) => {
+                return {
+                    ...prevData,
+                    image: data
+                }
+            })
         }
-    });
+    })
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>)=>{
-        if(e.target.files){
-            uploadImageMutation.mutate(e.target.files[0]);
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if(e.target.files) {
+            uploadImageMutation.mutate(e.target.files[0])
         }
     }
 
-    const handleUserProfileForm=(formData:ProfileForm)=>{
-        const user = queryClient.getQueryData(['profile'])!
-        user.description= formData.description;
-        user.handle= formData.handle;
-        updateProfileMutation.mutate(user);
+    const handleUserProfileForm = (formData: ProfileForm) => {
+        const user : User = queryClient.getQueryData(['user'])!
+        user.description = formData.description
+        user.handle = formData.handle
+        updateProfileMutation.mutate(user)
     }
+
     return (
-        <form 
+        <form
             className="bg-white p-10 rounded-lg space-y-5"
             onSubmit={handleSubmit(handleUserProfileForm)}
         >
@@ -66,8 +67,11 @@ export default function ProfileView() {
                     type="text"
                     className="border-none bg-slate-100 rounded-lg p-2"
                     placeholder="handle o Nombre de Usuario"
-                    {...register('handle', {required: 'this field is required'})}
+                    {...register('handle', {
+                        required: "El Nombre de Usuario es obligatorio"
+                    })}
                 />
+
                 {errors.handle && <ErrorMessage>{errors.handle.message}</ErrorMessage>}
             </div>
 
@@ -78,25 +82,26 @@ export default function ProfileView() {
                 <textarea
                     className="border-none bg-slate-100 rounded-lg p-2"
                     placeholder="Tu Descripción"
-                    {...register('description')}
+                    {...register('description', {
+                        required: "La Descripción es obligatoria"
+                    })}
                 />
+
                 {errors.description && <ErrorMessage>{errors.description.message}</ErrorMessage>}
             </div>
 
             <div className="grid grid-cols-1 gap-2">
                 <label
-                    htmlFor="handle"
+                    htmlFor="image"
                 >Imagen:</label>
                 <input
                     id="image"
                     type="file"
-                    name="handle"
+                    name="image"
                     className="border-none bg-slate-100 rounded-lg p-2"
                     accept="image/*"
-                    onChange={ handleChange}
-                    
+                    onChange={handleChange}
                 />
-                {errors.image && <ErrorMessage>{errors.image.message}</ErrorMessage>}
             </div>
 
             <input
@@ -107,3 +112,5 @@ export default function ProfileView() {
         </form>
     )
 }
+
+export default ProfileView
