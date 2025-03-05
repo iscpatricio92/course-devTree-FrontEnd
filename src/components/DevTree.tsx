@@ -26,7 +26,6 @@ const DevTree = ({ data }: DevTreeProps) => {
 
     const queryClient= useQueryClient();
     const handleDragEnd = (e: DragEndEvent) => {
-        console.log(e.active);
         const  {active, over} = e;
         if(over?.id){
             const prevIndex = enabledLinks.findIndex((link) => link.id === active.id);

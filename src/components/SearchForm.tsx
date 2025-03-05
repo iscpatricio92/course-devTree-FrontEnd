@@ -18,12 +18,9 @@ const SearchForm = () => {
     const handle = watch('handle')
     const handleSearch=()=>{
         const slug= slugify(handle)
-        console.log(slug);
         mutation.mutate(slug)
     }
 
-    console.log(mutation.data);
-    
     return (
         <form
             onSubmit={handleSubmit(handleSearch)}
